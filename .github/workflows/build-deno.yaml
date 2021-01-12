@@ -34,5 +34,5 @@ jobs:
       - name: Install QEMU
         uses: docker/setup-qemu-action@v1
       - run: |
-          docker run --rm -it ${{ matrix.target }}/ubuntu uname -a
+          docker run --rm ${{ matrix.target }}/ubuntu uname -a
           echo ${{ needs.release_metadata.outputs.upload_url }}
