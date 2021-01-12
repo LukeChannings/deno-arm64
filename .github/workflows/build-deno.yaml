@@ -16,9 +16,10 @@ jobs:
     steps:
       - name: get_upload_url
         run: |
-          url=$(curl -s -H "Accept: application/json" https://api.github.com/repos/lukechannings/docker-deno/releases | jq -r '.[]|select(.tag_name=="${GITHUB_REF}").upload_url')
+          tag=$(sed )
+          url=$(curl -s -H "Accept: application/json" https://api.github.com/repos/lukechannings/docker-deno/releases | jq -r '.[]|select(.tag_name=="${GITHUB_REF#refs/tags/}").upload_url')
           echo "::set-output name=upload_url::${url}"
-          echo "Test url = '$url', GITHUB_REF='${GITHUB_REF}'"
+          echo "Test url = '$url', GITHUB_REF='${GITHUB_REF#refs/tags/}'"
   # test:
   #   runs-on: ubuntu-latest
   #   needs: release
