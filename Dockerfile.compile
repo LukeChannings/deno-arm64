@@ -6,10 +6,8 @@ RUN apt update -y
 RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -y python curl build-essential unzip
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-ENV URL https://github.com/denoland/deno/archive/${DENO_VERSION}.zip
-
-RUN URL=$([ "${DENO_VERSION:0:1}" == "v" ] && echo "https://github.com/denoland/deno/archive/${DENO_VERSION}.zip" || echo "https://github.com/denoland/deno/archive/${DENO_VERSION}.zip") \
-  curl -fsSL $URL -o deno.zip
+RUN URL=$([ "${DENO_VERSION:0:6}" == "canary" ] && echo "https://github.com/denoland/deno/archive/${DENO_VERSION:7}.zip" || echo "https://github.com/denoland/deno/archive/${DENO_VERSION}.zip") \
+  curl -fsSL "$URL" -o deno.zip
 RUN unzip deno.zip
 RUN rm deno.zip
 
