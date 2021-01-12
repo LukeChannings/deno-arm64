@@ -27,12 +27,12 @@ jobs:
     strategy:
       matrix:
         target:
-          - linux/arm
-          - linux/arm64
-          - linux/amd64
+          - arm64v8
+          - arm32v7
+          - amd64
     steps:
       - name: Install QEMU
         uses: docker/setup-qemu-action@v1
       - run: |
-          docker run --rm -it --platform=${{ matrix.target }} ubuntu uname -a
+          docker run --rm -it ${{ matrix.target }}/ubuntu uname -a
           echo ${{ needs.release_metadata.outputs.upload_url }}
