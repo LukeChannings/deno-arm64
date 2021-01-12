@@ -1,0 +1,23 @@
+ARG IMAGE
+FROM $IMAGE
+
+ARG DENO_VERSION=v1.6.3
+
+RUN apt update -y
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -y python nodejs build-essential libglib2.0-dev curl
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+RUN curl -fsSL "https://github.com/denoland/deno/releases/download/${DENO_VERSION}/deno_src.tar.gz" -o deno.tar.gz
+RUN tar -zxf deno.tar.gz
+RUN rm deno.tar.gz
+
+WORKDIR /deno
+
+ENV PATH="/root/.cargo/bin:${PATH}"
+# 7GB
+ENV RUSTUP_UNPACK_RAM=7000000000
+
+RUN rustup target add wasm32-unknown-unknown
+RUN rustup target add wasm32-wasi 
+
+RUN cargo build --release --locked -vv

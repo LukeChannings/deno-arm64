@@ -1,15 +1,12 @@
-name: build-deno
+name: Compile Deno
 
-# https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows
 on:
   release:
     types: [created]
 
-# https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobs
 jobs:
   release_metadata:
     name: Get Release Upload URL
-    # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
@@ -31,8 +28,26 @@ jobs:
           - arm32v7
           - amd64
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Install QEMU
         uses: docker/setup-qemu-action@v1
       - run: |
-          docker run --rm ${{ matrix.target }}/ubuntu uname -a
-          echo ${{ needs.release_metadata.outputs.upload_url }}
+          docker build -t deno-build --build-arg IMAGE=${{ matrix.target }}/ubuntu --file ./Dockerfile.compile .
+          docker cp $(docker create deno-build):/deno/target/release/deno ./deno
+          zip deno-${{matrix.target }}.zip ./deno
+      - name: Archive deno binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: deno-${{ matrix.target }}
+          path: ./deno
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release_metadata.outputs.upload_url }}
+          asset_path: ./deno-${{matrix.target }}.zip
+          asset_name: deno-${{matrix.target }}
+          asset_content_type: application/zip
