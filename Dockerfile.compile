@@ -18,6 +18,4 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN rustup target add wasm32-unknown-unknown
 RUN rustup target add wasm32-wasi 
 
-RUN rustup target add x86_64-unknown-linux-musl
-
 RUN cargo build --target x86_64-unknown-linux-musl --release --locked -vv
