@@ -34,7 +34,7 @@ jobs:
       - name: Install QEMU
         uses: docker/setup-qemu-action@v1
       - run: |
-          platform=$(node -p "'${{ matrix.target }}'.replace(/-/g, '-')")
+          platform=$(node -p "'${{ matrix.target }}'.replace(/-/g, '/')")
           docker build -t deno-build --build-arg DENO_VERSION=${GITHUB_REF#refs/tags/} --platform=${platform} --file ./Dockerfile.compile .
           docker cp $(docker create deno-build):/deno/target/release/deno ./deno
           zip deno-${{ matrix.target }}.zip ./deno
