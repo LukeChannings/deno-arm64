@@ -1,10 +1,9 @@
-ARG IMAGE
-FROM $IMAGE
+FROM ubuntu:20.04
 
 ARG DENO_VERSION
 
 RUN apt update -y
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -y python curl
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -y python curl build-essential
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 RUN curl -fsSL "https://github.com/denoland/deno/releases/download/${DENO_VERSION}/deno_src.tar.gz" -o deno.tar.gz
