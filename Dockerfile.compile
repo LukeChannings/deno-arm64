@@ -9,7 +9,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN if [ "${DENO_VERSION:0:6}" == "canary" ]; then \
         curl -fsSL "https://github.com/denoland/deno/archive/${DENO_VERSION:7}.zip" -o deno.zip ; \
     else \
-        curl -fsSL "https://github.com/denoland/deno/archive/${DENO_VERSION}.zip" -o deno.zip \
+        curl -fsSL "https://github.com/denoland/deno/archive/${DENO_VERSION}.zip" -o deno.zip ; \
     fi
 RUN unzip deno.zip
 RUN rm deno.zip
