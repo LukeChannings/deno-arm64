@@ -3,12 +3,15 @@ FROM ubuntu:18.04
 ARG DENO_VERSION
 
 RUN apt update -y
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -y python curl build-essential
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -y python curl build-essential unzip
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-RUN curl -fsSL "https://github.com/denoland/deno/releases/download/${DENO_VERSION}/deno_src.tar.gz" -o deno.tar.gz
-RUN tar -zxf deno.tar.gz
-RUN rm deno.tar.gz
+ENV URL https://github.com/denoland/deno/archive/${DENO_VERSION}.zip
+
+RUN URL=$([ "${DENO_VERSION:0:1}" == "v" ] && echo "https://github.com/denoland/deno/archive/${DENO_VERSION}.zip" || echo "https://github.com/denoland/deno/archive/${DENO_VERSION}.zip") \
+  curl -fsSL $URL -o deno.zip
+RUN unzip deno.zip
+RUN rm deno.zip
 
 WORKDIR /deno
 
