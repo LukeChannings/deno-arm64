@@ -11,11 +11,13 @@ jobs:
     outputs:
       upload_url: ${{ steps.get_upload_metadata.outputs.upload_url }}
       prerelease: ${{ steps.get_upload_metadata.outputs.prerelease }}
+      version: ${{ steps.get_upload_metadata.outputs.version }}
     steps:
       - id: get_upload_metadata
         run: |
           response=$(curl -s -H "Accept: application/json" https://api.github.com/repos/lukechannings/docker-deno/releases)
           release=$(echo $response | jq ".[]|select(.tag_name==\"${GITHUB_REF#refs/tags/}\")")
+          echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
           echo "::set-output name=upload_url::$(echo $release | jq -r ".upload_url")"
           echo "::set-output name=prerelease::$(echo $release | jq -r ".prerelease")"
   compile:
@@ -82,7 +84,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          build-args: VERSION=${GITHUB_REF#refs/tags/}
+          build-args: VERSION=${{ needs.release_metadata.outputs.version }}
           tags: |
-            lukechannings/deno:${GITHUB_REF#refs/tags/}
+            lukechannings/deno:${{ needs.release_metadata.outputs.version }}
             lukechannings/deno:latest
