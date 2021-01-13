@@ -2,8 +2,10 @@ FROM ubuntu:18.04
 
 ARG DENO_VERSION
 
-RUN apt update -y
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt install -y python curl build-essential unzip
+SHELL ["/bin/bash", "-c"]
+
+RUN apt-get update -y
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y python curl build-essential unzip
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 RUN if [ "${DENO_VERSION:0:6}" == "canary" ]; then \
