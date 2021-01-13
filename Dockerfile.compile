@@ -16,7 +16,7 @@ RUN if [ "${DENO_VERSION:0:6}" == "canary" ]; then \
 RUN unzip deno.zip
 RUN rm deno.zip
 
-WORKDIR /deno
+WORKDIR /deno*
 
 ENV PATH="/root/.cargo/bin:${PATH}"
 
