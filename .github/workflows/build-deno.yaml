@@ -75,7 +75,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         if: |
-          !startWith("canary-", "${{ needs.release_metadata.outputs.version }}")
+          !startsWith("canary-", "${{ needs.release_metadata.outputs.version }}")
         with:
           context: .
           file: ./Dockerfile
@@ -87,7 +87,7 @@ jobs:
             lukechannings/deno:latest
       - name: Build and push (Canary)
         uses: docker/build-push-action@v2
-        if: startWith("canary-", "${{ needs.release_metadata.outputs.version }}")
+        if: startsWith("canary-", "${{ needs.release_metadata.outputs.version }}")
         with:
           context: .
           file: ./Dockerfile
