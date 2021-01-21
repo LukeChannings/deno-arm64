@@ -26,6 +26,6 @@ RUN rustup target add wasm32-unknown-unknown
 RUN rustup target add wasm32-wasi 
 
 ENV V8_FROM_SOURCE=1
-ENV RUST_BACKTRACE=1
+ENV RUST_BACKTRACE=full
 
 RUN cargo build --release --locked -vv
