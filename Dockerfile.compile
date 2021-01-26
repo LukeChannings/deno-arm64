@@ -5,7 +5,12 @@ ARG DENO_VERSION
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update -y
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y python curl build-essential unzip libglib2.0-dev
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -yq --no-install-suggests --no-install-recommends python curl build-essential unzip \
+    libglib2.0-dev binfmt-support g++-5-aarch64-linux-gnu g++-5-multilib \
+    gcc-5-aarch64-linux-gnu libc6-arm64-cross qemu qemu-user qemu-user-binfmt
+
+RUN ln -s /usr/aarch64-linux-gnu/lib/ld-linux-aarch64.so.1 /lib/ld-linux-aarch64.so.1
+
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 RUN if [ "${DENO_VERSION:0:6}" == "canary" ]; then \
@@ -27,5 +32,7 @@ RUN rustup target add wasm32-wasi
 
 ENV V8_FROM_SOURCE=1
 ENV RUST_BACKTRACE=full
+ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=/usr/bin/aarch64-linux-gnu-gcc-5
+ENV QEMU_LD_PREFIX=/usr/aarch64-linux-gnu
 
 RUN cargo build --release --locked -vv
