@@ -1,0 +1,15 @@
+FROM ubuntu:20.04
+
+COPY ./deno /bin/deno
+RUN chmod 755 /bin/deno
+
+RUN addgroup --gid 1993 deno
+RUN adduser --uid 1993 --gid 1993 deno
+RUN mkdir /deno-dir/
+RUN chown deno:deno /deno-dir/
+
+ENV DENO_DIR /deno-dir/
+ENV DENO_INSTALL_ROOT /usr/local
+
+ENTRYPOINT ["/bin/deno"]
+CMD ["run", "https://deno.land/std/examples/welcome.ts"]
