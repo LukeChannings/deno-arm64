@@ -42,7 +42,8 @@ jobs:
         uses: docker/setup-qemu-action@v1
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11
-      - run: |
+      - name: Compile Deno
+        run: |
           platform=$(node -p "'${{ matrix.target }}'.replace(/-/g, '/')")
           echo "Building for ${platform}"
           docker build -t deno-build --build-arg DENO_VERSION=${GITHUB_REF#refs/tags/} --platform=${platform} --file ./Dockerfile.compile .
