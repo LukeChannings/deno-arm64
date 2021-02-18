@@ -63,8 +63,6 @@ As such, compiling for 32-bit ARM needs to be done on a 32-bit ARM computer,
 and because these systems are typically underpowered,
 compiling may take a prohibitively long time 😬.
 
-It seems very unlikely to me that we'll ever have Deno on 32-bit ARM.
-
 ## Why can't you just cross-compile?
 
 In order to speed up startup time Deno builds a V8 bytecode snapshot for its JavaScript runtime.
@@ -88,5 +86,7 @@ I have forked `rusty_v8` for this project and have been able to successfully cro
 > 
 > &mdash; [@afinch7](https://github.com/denoland/deno/issues/4862#issuecomment-711110480)
 
+## I don't want Docker and emulation, I just want to build Deno on my Raspberry Pi!
 
-
+You can follow the [Building from source](https://deno.land/manual@v1.7.4/contributing/building_from_source) instructions.
+Note that RAM is a problem during compilation, it fails to compile on my 2GB Pi 4, but others have reported success (possibly with a higher spec Pi).
