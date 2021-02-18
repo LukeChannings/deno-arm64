@@ -20,7 +20,7 @@ You can follow the issue [here](https://github.com/denoland/deno/issues/1846).
 ## How do I use this as a base image?
 
 ```Dockerfile
-FROM lukechannings/deno:1.6.3
+FROM lukechannings/deno:v1.7.4
 
 CMD ["run", "https://deno.land/std/examples/welcome.ts"]
 ```
