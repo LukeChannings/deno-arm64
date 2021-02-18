@@ -3,10 +3,13 @@ FROM ubuntu:20.04 as downloader
 ARG TARGETPLATFORM
 ARG VERSION
 
+SHELL ["/bin/bash", "-c"]
+
 RUN apt update -y
 RUN apt install -y unzip curl
 
-RUN curl -Lsf https://github.com/LukeChannings/docker-deno/releases/download/${VERSION}/deno-$(echo $TARGETPLATFORM | tr '/' '-').zip -o deno.zip
+RUN [ "$TARGETPLATFORM" == "linux/arm64" ] && curl -Lsf https://github.com/LukeChannings/docker-deno/releases/download/${VERSION}/deno-$(echo $TARGETPLATFORM | tr '/' '-').zip -o deno.zip || true
+RUN [ "$TARGETPLATFORM" == "linux/amd64" ] && curl -Lsf https://github.com/denoland/deno/releases/download/${VERSION}/deno-x86_64-unknown-linux-gnu.zip -o deno.zip || true
 
 RUN unzip deno.zip && rm deno.zip
 
