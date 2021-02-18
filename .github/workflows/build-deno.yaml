@@ -38,6 +38,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Cache
+        uses: actions/cache@v2.1.4
       - name: Install QEMU
         uses: docker/setup-qemu-action@v1
       - name: Docker Layer Caching
