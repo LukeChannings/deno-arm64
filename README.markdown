@@ -63,6 +63,8 @@ As such, compiling for 32-bit ARM needs to be done on a 32-bit ARM computer,
 and because these systems are typically underpowered,
 compiling may take a prohibitively long time 😬.
 
+It seems very unlikely to me that we'll ever have Deno on 32-bit ARM.
+
 ## Why can't you just cross-compile?
 
 In order to speed up startup time Deno builds a V8 bytecode snapshot for its JavaScript runtime.
