@@ -48,3 +48,21 @@ You can read more [here](https://bugs.launchpad.net/qemu/+bug/1805913).
 As such, compiling for 32-bit ARM needs to be done on a 32-bit ARM computer,
 and because these systems are typically underpowered,
 compiling may take a prohibitively long time 😬.
+
+## Why can't you just cross-compile?
+
+In order to speed up startup time Deno builds a V8 bytecode snapshot for its JavaScript runtime.
+These snapshots are architecture-specific, and will cause a crash at runtime if the architecture isn't the same.
+
+For example, when Deno is cross-compiled to ARM64 from an x86_64 architecture, the resulting binary will be ARM64.
+However, because the [`build.rs`](https://github.com/denoland/deno/blob/master/cli/build.rs#L52) snapshot was generated on an x86 host, the snapshot will be x86 bytecode, and that causes a crash at runtime.
+
+I tried to work around this by patching Deno to disable the compiler snapshot, but there was still a runtime crash with a difficult-to-debug stacktrace, so I think the rabbit hole goes deeper.
+
+I don't think patching Deno is a viable option, since a future change to Deno could cause another kind of incompatibility, and I'd have to maintain a patch. For the time being emulation is a reasonable (if a bit slow) solution to this problem.
+
+Further, Deno depends on [`rusty_v8`](https://github.com/denoland/rusty_v8), which takes a long time to compile in normal conditions, let alone under emulation.
+
+At time of writing `rusty_v8` has problems publishing a pre-compiled ARM64 binary, and so Deno requires being compiled with `V8_FROM_SOURCE=1`, as well as a number of additional dependencies.
+
+I have forked `rusty_v8` for this project and have been able to successfully cross-compile `rusty_v8` for ARM64. The standalone binaries can be found [here](https://github.com/lukechannings/rusty_v8/releases).
