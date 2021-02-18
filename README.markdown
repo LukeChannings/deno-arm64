@@ -3,6 +3,20 @@
 I put this together because there are no ARM images for Docker [yet](https://github.com/denoland/deno/issues/1846#issuecomment-725165778).
 This project compiles ARM binaries (see [Dockerfile.compile](Dockerfile.compile)) as well as building Docker images.
 
+## Why isn't there official support?
+
+The Deno team are waiting for ARM64 GitHub Actions runners:
+
+> We use GitHub Actions exclusively. We are working with GitHub on the potential of their ARM64 support.
+> 
+> &mdash; [@kitsonk](https://github.com/denoland/deno/issues/1846#issuecomment-725209062)
+
+At the moment [GitHub Actions Virtual Environments](https://github.com/actions/virtual-environments) are x86 only &mdash; although you can provide your own runners.
+
+The QEMU-based builds take a long time, up to 2 hours just for compiling, and since Deno's CI runs on each push it needs to be fast.
+
+You can follow the issue [here](https://github.com/denoland/deno/issues/1846).
+
 ## How do I use this as a base image?
 
 ```Dockerfile
