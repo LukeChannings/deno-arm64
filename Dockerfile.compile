@@ -22,10 +22,12 @@ RUN mv /deno-* /deno || true
 
 WORKDIR /deno
 
-RUN mkdir -p /deno/target/aarch64-unknown-linux-gnu/release/gn_out/obj
+RUN mkdir -p /deno/target/release/gn_out/obj
 
 RUN curl -fL "https://github.com/LukeChannings/rusty_v8/releases/download/v$(cat Cargo.lock | tomlq -r '.package[] | select(.name=="rusty_v8") .version')/librusty_v8_release_aarch64-unknown-linux-gnu.a" \
-    -o "/deno/target/aarch64-unknown-linux-gnu/release/gn_out/obj/librusty_v8.a"
+    -o "/deno/target/release/gn_out/obj/librusty_v8.a"
+
+RUN [ $(stat -c%s /deno/target/release/gn_out/obj/librusty_v8.a) -gt 1000000 ] && echo "librusty_v8.a downloaded correctly."
 
 ENV PATH="/root/.cargo/bin:${PATH}"
 
