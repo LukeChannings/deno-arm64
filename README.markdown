@@ -38,7 +38,7 @@ e.g. [https://github.com/LukeChannings/docker-deno/releases/download/v1.6.3/deno
 1. Set up buildx, so that you can emulate ARM: `docker buildx create --use`
 2. Ensure Docker is configured with *at least* 8GB of RAM, otherwise the build will fail with `(signal: 9, SIGKILL: kill)`
 3. Compile with `docker build -t deno-build --build-arg DENO_VERSION="v1.7.4" --platform="linux/arm64" --file ./Dockerfile.compile .`
-4. Run `docker cp $(docker create deno-build):/deno/target/release/deno ./deno`
+4. Copy out the deno binary with `docker run --rm --platform=${platform} -v $(pwd):/pwd deno-build cp /deno/target/aarch64-unknown-linux-gnu/release/deno /pwd/`
 
 The resulting `deno` binary will run on Linux ARM64.
 
