@@ -54,7 +54,7 @@ docker run -it --rm --platform=linux/arm64 deno
 
 ## What about 32-bit ARM?!
 
-Docker's buildx uses [QEMU](https://en.wikipedia.org/wiki/QEMU) by emulate ARM on x86.
+Docker's buildx uses [QEMU](https://en.wikipedia.org/wiki/QEMU) to emulate ARM on x86.
 
 Unfortunately there are bugs related to QEMU and 32-bit ARM that prevent compilation. 
 You can read more [here](https://bugs.launchpad.net/qemu/+bug/1805913).
