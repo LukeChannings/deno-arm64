@@ -34,4 +34,4 @@ RUN curl -fL "https://github.com/LukeChannings/rusty_v8/releases/download/v$(cat
 
 RUN [ "$(file -bi /deno/target/aarch64-unknown-linux-gnu/release/gn_out/obj/librusty_v8.a)" == "application/x-archive; charset=binary" ] && echo "librusty_v8.a was downloaded correctly (Size is $(du -h /deno/target/aarch64-unknown-linux-gnu/release/gn_out/obj/librusty_v8.a))" || rm /deno/target/aarch64-unknown-linux-gnu/release/gn_out/obj/librusty_v8.a
 
-RUN cargo build --target aarch64-unknown-linux-gnu --release --locked --all-targets -vv
+RUN cargo build --release --locked --all-targets -vv
