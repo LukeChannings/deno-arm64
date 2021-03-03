@@ -29,7 +29,7 @@ RUN rustup target add wasm32-wasi
 
 RUN mkdir -p /deno/target/aarch64-unknown-linux-gnu/release/gn_out/obj
 
-RUN curl -fL "https://github.com/LukeChannings/rusty_v8/releases/download/v$(cat Cargo.lock | tomlq -r '.package[] | select(.name=="rusty_v8") .version')/librusty_v8_release_aarch64-unknown-linux-gnu.a" \
+RUN curl -L "https://github.com/LukeChannings/rusty_v8/releases/download/v$(cat Cargo.lock | tomlq -r '.package[] | select(.name=="rusty_v8") .version')/librusty_v8_release_aarch64-unknown-linux-gnu.a" \
     -o "/deno/target/aarch64-unknown-linux-gnu/release/gn_out/obj/librusty_v8.a"
 
 RUN [ "$(file -bi /deno/target/aarch64-unknown-linux-gnu/release/gn_out/obj/librusty_v8.a)" == "application/x-archive; charset=binary" ] && echo "librusty_v8.a was downloaded correctly (Size is $(du -h /deno/target/aarch64-unknown-linux-gnu/release/gn_out/obj/librusty_v8.a))" || rm /deno/target/aarch64-unknown-linux-gnu/release/gn_out/obj/librusty_v8.a
