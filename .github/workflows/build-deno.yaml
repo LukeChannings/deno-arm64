@@ -10,7 +10,7 @@ on:
         required: true
       skip_compile:
         description: Skip Compilation
-        default: false
+        default: "false"
 
 jobs:
   release_metadata:
