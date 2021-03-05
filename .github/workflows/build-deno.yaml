@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: release_metadata
     name: "Compile ${{ matrix.target }}"
-    if: ${{ github.event.inputs.skip_compile == "false" }}
+    if: ${{ github.event.inputs.skip_compile == 'false' }}
     strategy:
       matrix:
         target:
