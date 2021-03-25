@@ -31,7 +31,7 @@ jobs:
           echo "::set-output name=upload_url::$(echo $release | jq -r ".upload_url")"
           echo "::set-output name=prerelease::$(echo $release | jq -r ".prerelease")"
   compile:
-    runs-on: self-hosted,Linux,ARM64
+    runs-on: self-hosted
     needs: release_metadata
     name: "Compile ${{ matrix.target }}"
     if: ${{ github.event.inputs.skip_compile == 'false' }}
