@@ -15,7 +15,7 @@ on:
 jobs:
   release_metadata:
     name: Get Release Upload Metadata
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       upload_url: ${{ steps.get_upload_metadata.outputs.upload_url }}
       prerelease: ${{ steps.get_upload_metadata.outputs.prerelease }}
