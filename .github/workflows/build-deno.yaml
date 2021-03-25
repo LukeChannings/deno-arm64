@@ -31,33 +31,18 @@ jobs:
           echo "::set-output name=upload_url::$(echo $release | jq -r ".upload_url")"
           echo "::set-output name=prerelease::$(echo $release | jq -r ".prerelease")"
   compile:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted,Linux,ARM64
     needs: release_metadata
     name: "Compile ${{ matrix.target }}"
     if: ${{ github.event.inputs.skip_compile == 'false' }}
-    strategy:
-      matrix:
-        target:
-          - linux-arm64
-          # 32-bit ARM isn't supported in QEMU because of this bug:
-          # - https://bugs.launchpad.net/qemu/+bug/1805913
-          # - https://github.com/rust-lang/cargo/issues/7451
-          # - https://github.com/rust-lang/cargo/issues/8719
-          # I've disabled it for the time being.
-
-          # - linux-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Install QEMU
-        uses: docker/setup-qemu-action@v1
       - name: Compile Deno
         run: |
-          platform=$(node -p "'${{ matrix.target }}'.replace(/-/g, '/')")
-          echo "Building for ${platform}"
-          docker build -t deno-build --build-arg DENO_VERSION=${GITHUB_REF#refs/tags/} --platform=${platform} --file ./Dockerfile.compile .
-          docker run --rm --platform=${platform} -v $(pwd):/pwd deno-build cp /deno/target/aarch64-unknown-linux-gnu/release/deno /pwd/
-          zip deno-${{ matrix.target }}.zip ./deno
+          docker build -t deno-build --build-arg DENO_VERSION=${GITHUB_REF#refs/tags/} --file ./Dockerfile.compile .
+          docker run --rm -v $(pwd):/pwd deno-build cp /deno/target/aarch64-unknown-linux-gnu/release/deno /pwd/
+          zip deno-linux-arm64.zip ./deno
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
@@ -65,8 +50,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release_metadata.outputs.upload_url }}
-          asset_path: ./deno-${{ matrix.target }}.zip
-          asset_name: deno-${{ matrix.target }}.zip
+          asset_path: ./deno-linux-arm64.zip
+          asset_name: deno-linux-arm64.zip
           asset_content_type: application/zip
   build-docker:
     name: Build Docker images
