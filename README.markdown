@@ -20,7 +20,7 @@ You can follow the issue [here](https://github.com/denoland/deno/issues/1846).
 ## How do I use this as a base image?
 
 ```Dockerfile
-FROM lukechannings/deno:v1.7.4
+FROM lukechannings/deno:v1.8.3
 
 CMD ["run", "https://deno.land/std/examples/welcome.ts"]
 ```
@@ -33,11 +33,27 @@ Deno binaries can be found in listed assets in [releases](https://github.com/Luk
 
 e.g. [https://github.com/LukeChannings/docker-deno/releases/download/v1.6.3/deno-linux-arm64.zip](https://github.com/LukeChannings/docker-deno/releases/download/v1.6.3/deno-linux-arm64.zip)
 
+## How can I `deno compile` an ARM64 Linux binary?
+
+Install QEMU binaries from [multiarch/qemu-user-static](https://github.com/multiarch/qemu-user-static) with:
+
+```
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+```
+
+Then you will be able to run multi-platform images with Docker's `--platform` argument:
+
+```
+docker run --rm --platform linux/arm64 -v .:/build lukechannings/deno compile -A --unstable /build/entrypoint.ts
+```
+
+Deno will produce an ARM64 binary in `/build/entrypoint`.
+
 ## How do I compile deno myself?
 
 1. Set up buildx, so that you can emulate ARM: `docker buildx create --use`
 2. Ensure Docker is configured with *at least* 8GB of RAM, otherwise the build will fail with `(signal: 9, SIGKILL: kill)`
-3. Compile with `docker build -t deno-build --build-arg DENO_VERSION="v1.7.4" --platform="linux/arm64" --file ./Dockerfile.compile .`
+3. Compile with `docker build -t deno-build --build-arg DENO_VERSION="v1.8.3" --platform="linux/arm64" --file ./Dockerfile.compile .`
 4. Copy out the deno binary with `docker run --rm --platform="linux/arm64" -v $(pwd):/pwd deno-build cp /deno/target/aarch64-unknown-linux-gnu/release/deno /pwd/`
 
 The resulting `deno` binary will run on Linux ARM64.
