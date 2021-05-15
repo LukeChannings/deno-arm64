@@ -40,9 +40,7 @@ jobs:
           echo "Compiling Deno version ${GITHUB_REF#refs/tags/}"
           docker build -t deno-build --build-arg DENO_VERSION=${GITHUB_REF#refs/tags/} --file ./Dockerfile.compile .
           docker run --rm -v $(pwd):/pwd deno-build cp /deno/target/release/deno /pwd/
-          docker run --rm -v $(pwd):/pwd deno-build cp /deno/target/release/denort /pwd/
           zip deno-linux-arm64.zip ./deno
-          zip denort-linux-arm64.zip ./denort
       - name: Upload Release Asset
         id: upload-release-asset-deno
         uses: actions/upload-release-asset@v1
@@ -52,16 +50,6 @@ jobs:
           upload_url: ${{ needs.release_metadata.outputs.upload_url }}
           asset_path: ./deno-linux-arm64.zip
           asset_name: deno-linux-arm64.zip
-          asset_content_type: application/zip
-      - name: Upload Release Asset
-        id: upload-release-asset-denort
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release_metadata.outputs.upload_url }}
-          asset_path: ./denort-linux-arm64.zip
-          asset_name: denort-linux-arm64.zip
           asset_content_type: application/zip
   build-docker:
     name: Build Docker images
