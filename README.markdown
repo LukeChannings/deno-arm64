@@ -1,9 +1,27 @@
-# Deno ARM64
+# Multi-Arch Deno images & ARM64 binaries
+
+[![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/lukechannings/deno/latest?label=Docker%20Image)](https://hub.docker.com/repository/docker/lukechannings/deno)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/lukechannings/docker-deno?label=ARM64%20Binary)](https://github.com/LukeChannings/docker-deno/releases)
+
+## What is this
 
 I put this together because there are no ARM images for Docker [yet](https://github.com/denoland/deno/issues/1846#issuecomment-725165778).
-This project compiles ARM binaries (see [Dockerfile.compile](Dockerfile.compile)) as well as building Docker images.
+This project compiles ARM binaries (see [Dockerfile.compile](Dockerfile.compile)) as well as building a multi-architecture Docker image.
 
-## Why isn't there official support?
+### How does it work?
+
+Originally this project compiled Deno on [GitHub Actions](https://github.com/features/actions) using QEMU to emulate ARM on x86, this would use 8GB+ of RAM and take hours (usually around 3 hours).
+
+In recent Deno releases the memory requirements under QEMU compilation have exceeded the limits of free GitHub Actions and I have resorted to compiling on my ARM-based M1 MacBook Air, which was added as a [self-hosted GitHub Actions Runner](https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners). This brings compile time for an ARM64 release down to 10-20 minutes.
+
+### But I just want a Deno binary for my Raspberry Pi!
+
+You can download the latest Deno binaries from the [Releases](https://github.com/LukeChannings/docker-deno/releases) page.
+There should be a `deno-linux-arm64.zip` asset attached to each release.
+
+## FAQ
+
+### Why isn't there official support?
 
 The Deno team are waiting for ARM64 GitHub Actions runners:
 
@@ -17,58 +35,7 @@ The QEMU-based builds take a long time, up to 2 hours just for compiling, and si
 
 You can follow the issue [here](https://github.com/denoland/deno/issues/1846).
 
-## How do I use this as a base image?
-
-```Dockerfile
-FROM lukechannings/deno:v1.8.3
-
-CMD ["run", "https://deno.land/std/examples/welcome.ts"]
-```
-
-(A real-world example can be found [here](https://github.com/LukeChannings/moviematch/blob/main/Dockerfile))
-
-## Where can I download Deno binaries for ARM64?
-
-Deno binaries can be found in listed assets in [releases](https://github.com/LukeChannings/docker-deno/releases).
-
-e.g. [https://github.com/LukeChannings/docker-deno/releases/download/v1.6.3/deno-linux-arm64.zip](https://github.com/LukeChannings/docker-deno/releases/download/v1.6.3/deno-linux-arm64.zip)
-
-## How can I `deno compile` an ARM64 Linux binary?
-
-Install QEMU binaries from [multiarch/qemu-user-static](https://github.com/multiarch/qemu-user-static) with:
-
-```
-docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-```
-
-Then you will be able to run multi-platform images with Docker's `--platform` argument:
-
-```
-docker run --rm --platform linux/arm64 -v .:/build lukechannings/deno compile -A --unstable /build/entrypoint.ts
-```
-
-Deno will produce an ARM64 binary in `/build/entrypoint`.
-
-## How do I compile deno myself?
-
-1. Set up buildx, so that you can emulate ARM: `docker buildx create --use`
-2. Ensure Docker is configured with *at least* 8GB of RAM, otherwise the build will fail with `(signal: 9, SIGKILL: kill)`
-3. Compile with `docker build -t deno-build --build-arg DENO_VERSION="v1.8.3" --platform="linux/arm64" --file ./Dockerfile.compile .`
-4. Copy out the deno binary with `docker run --rm --platform="linux/arm64" -v $(pwd):/pwd deno-build cp /deno/target/aarch64-unknown-linux-gnu/release/deno /pwd/`
-
-The resulting `deno` binary will run on Linux ARM64.
-
-To build your own Docker image, run:
-
-```bash
-docker buildx create --use
-docker buildx build --platform linux/arm64 -t deno --load -f Dockerfile.standalone .
-
-# Run with
-docker run -it --rm --platform=linux/arm64 deno
-```
-
-## What about 32-bit ARM?!
+### What about 32-bit ARM?!
 
 Docker's buildx uses [QEMU](https://en.wikipedia.org/wiki/QEMU) to emulate ARM on x86.
 
@@ -79,7 +46,7 @@ As such, compiling for 32-bit ARM needs to be done on a 32-bit ARM computer,
 and because these systems are typically underpowered,
 compiling may take a prohibitively long time 😬.
 
-## Why can't you just cross-compile?
+### Why can't you just cross-compile?
 
 In order to speed up startup time Deno builds a V8 bytecode snapshot for its JavaScript runtime.
 These snapshots are architecture-specific, and will cause a crash at runtime if the architecture isn't the same.
@@ -102,7 +69,8 @@ I have forked `rusty_v8` for this project and have been able to successfully cro
 > 
 > &mdash; [@afinch7](https://github.com/denoland/deno/issues/4862#issuecomment-711110480)
 
-## I don't want Docker and emulation, I just want to build Deno on my Raspberry Pi!
+### Why do you care about building an ARM64 binary?
 
-You can follow the [Building from source](https://deno.land/manual@v1.7.4/contributing/building_from_source) instructions.
-Note that RAM is a problem during compilation, it fails to compile on my 2GB Pi 4, but others have reported success (possibly with a higher spec Pi).
+I'm using Deno for one of my projects &mdash; [MovieMatch](https://github.com/LukeChannings/moviematch) &mdash; that has a requirement to provide standalone binaries for popular architectures, as well as a multi-architecture Docker image.
+
+If you're interested in how I build standalone binaries for these architectures, check out the build file [here](https://github.com/LukeChannings/moviematch/blob/main/Justfile#L69).
