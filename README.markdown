@@ -6,7 +6,7 @@
 ## What is this
 
 I put this together because there are no Linux ARM64 binaries for Deno [yet](https://github.com/denoland/deno/issues/1846#issuecomment-725165778).
-This project compiles ARM binaries (see [Dockerfile.compile](Dockerfile.compile)), and simultaneously releases a multi-arch Docker using the Ubuntu base image.
+This project compiles ARM binaries and simultaneously releases a multi-arch Docker using the Ubuntu base image.
 
 ### How does it work?
 
