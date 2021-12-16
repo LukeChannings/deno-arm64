@@ -1,0 +1,53 @@
+diff --git a/Cargo.lock b/Cargo.lock
+index 553b3c7c9..453bc57f0 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -834,6 +834,7 @@ version = "0.16.0"
+ dependencies = [
+  "deno_core",
+  "dlopen",
++ "libc",
+  "libffi",
+  "serde",
+  "tokio",
+diff --git a/ext/ffi/Cargo.toml b/ext/ffi/Cargo.toml
+index 2d1d9c22d..3fc1bbda9 100644
+--- a/ext/ffi/Cargo.toml
++++ b/ext/ffi/Cargo.toml
+@@ -19,6 +19,7 @@ dlopen = "0.1.8"
+ libffi = "2.0.0"
+ serde = { version = "1.0.129", features = ["derive"] }
+ tokio = { version = "1.10.1", features = ["full"] }
++libc = "=0.2.106"
+ 
+ [target.'cfg(windows)'.dependencies]
+ winapi = { version = "0.3.9", features = ["errhandlingapi", "minwindef", "ntdef", "winbase", "winnt"] }
+diff --git a/ext/ffi/lib.rs b/ext/ffi/lib.rs
+index de4ff3ef2..eaf7d0492 100644
+--- a/ext/ffi/lib.rs
++++ b/ext/ffi/lib.rs
+@@ -1,5 +1,5 @@
+ // Copyright 2021 the Deno authors. All rights reserved. MIT license.
+-
++use libc::c_char;
+ use deno_core::error::bad_resource_id;
+ use deno_core::error::range_error;
+ use deno_core::error::AnyError;
+@@ -608,7 +608,7 @@ where
+   let permissions = state.borrow_mut::<FP>();
+   permissions.check(None)?;
+ 
+-  let ptr = u64::from(ptr) as *const i8;
++  let ptr = u64::from(ptr) as *const c_char;
+   Ok(unsafe { CStr::from_ptr(ptr) }.to_str()?.to_string())
+ }
+ 
+@@ -637,7 +637,7 @@ where
+   let permissions = state.borrow_mut::<FP>();
+   permissions.check(None)?;
+ 
+-  Ok(unsafe { ptr::read_unaligned(u64::from(ptr) as *const i8) })
++  Ok(unsafe { ptr::read_unaligned(u64::from(ptr) as *const _) })
+ }
+ 
+ fn op_ffi_read_u16<FP>(

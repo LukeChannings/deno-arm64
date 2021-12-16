@@ -20,9 +20,13 @@ RUN mv /deno-* /deno || true
 
 WORKDIR /deno
 
+ADD deno_ffi_i8.patch /deno/
+
+RUN patch -p1 < deno_ffi_i8.patch
+
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 RUN rustup target add wasm32-unknown-unknown
 RUN rustup target add wasm32-wasi 
 
-RUN cargo build --release --locked --all -vv
+RUN cargo build --release --locked --all-targets
