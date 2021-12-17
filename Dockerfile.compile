@@ -1,28 +1,22 @@
 FROM ubuntu:18.04
 
-ARG DENO_VERSION
-
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update -y
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y python curl build-essential unzip
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y python curl build-essential unzip git
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-RUN if [ "${DENO_VERSION:0:6}" == "canary" ]; then \
-       curl -fsSL "https://github.com/denoland/deno/archive/${DENO_VERSION:7}.zip" -o deno.zip ; \
-    else \
-        curl -fsSL "https://github.com/denoland/deno/archive/${DENO_VERSION}.zip" -o deno.zip ; \
-    fi
-RUN unzip deno.zip
-RUN rm deno.zip
+ARG DENO_VERSION
 
-RUN mv /deno-* /deno || true
+RUN git clone --recurse-submodules https://github.com/denoland/deno.git /deno
 
 WORKDIR /deno
 
-ADD deno_ffi_i8.patch /deno/
-
-RUN patch -p1 < deno_ffi_i8.patch
+RUN if [ "${DENO_VERSION:0:6}" == "canary" ]; then \
+      git checkout "${DENO_VERSION:7}" ; \
+    else \
+      git checkout "${DENO_VERSION}" ; \
+    fi
 
 ENV PATH="/root/.cargo/bin:${PATH}"
 
