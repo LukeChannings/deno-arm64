@@ -18,6 +18,10 @@ RUN if [ "${DENO_VERSION:0:6}" == "canary" ]; then \
       git checkout "${DENO_VERSION}" ; \
     fi
 
+ADD deno_upgrade_release_url.patch /deno/
+
+RUN patch -p1 < deno_upgrade_release_url.patch
+
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 RUN rustup target add wasm32-unknown-unknown
