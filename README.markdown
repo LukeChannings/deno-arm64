@@ -6,7 +6,7 @@
 ## What is this
 
 I put this together because there are no Linux ARM64 binaries for Deno [yet](https://github.com/denoland/deno/issues/1846#issuecomment-725165778).
-This project compiles ARM binaries and simultaneously releases a multi-arch container image using the Ubuntu base image.
+This project compiles ARM binaries and simultaneously releases a combined arm64 & amd64 container image based on Ubuntu.
 
 ### How does it work?
 
@@ -18,6 +18,8 @@ In recent Deno releases the memory requirements under QEMU compilation have exce
 
 You can download the latest Deno binaries from the [Releases](https://github.com/LukeChannings/deno-arm64/releases) page.
 There should be a `deno-linux-arm64.zip` asset attached to each release.
+
+Once installed, the `deno upgrade` command will download the latest build from this repository. 
 
 ## FAQ
 
