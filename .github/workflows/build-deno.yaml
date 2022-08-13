@@ -35,11 +35,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Compile Deno
+        shell: bash
         run: |
           apt-get update -y && apt-get install -y zip unzip
+          echo "::echo::on"
           echo "Compiling Deno version ${GITHUB_REF#refs/tags/}"
           docker build -t deno-build --build-arg DENO_VERSION=${GITHUB_REF#refs/tags/} --file ./Dockerfile.compile .
-          docker run --rm -v $(pwd):/pwd deno-build cp /deno/target/release/deno /pwd/
+          echo "Extracting compiled deno binary to $(pwd)"
+          CONTAINER_ID="$(docker create deno-build)"
+          docker cp "${CONTAINER_ID}:/deno/target/release/deno" .
+          docker rm "${CONTAINER_ID}"
           zip deno-linux-arm64.zip ./deno
       - name: Upload Release Asset
         id: upload-release-asset-deno
