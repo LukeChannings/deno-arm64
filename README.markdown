@@ -8,6 +8,21 @@
 I put this together because there are no Linux ARM64 binaries for Deno [yet](https://github.com/denoland/deno/issues/1846#issuecomment-725165778).
 This project compiles ARM binaries and simultaneously releases a combined arm64 & amd64 container image based on Ubuntu.
 
+### Compiling locally
+
+To build a binary locally, using Docker, the following should compile and export a binary into the local directory.
+
+**Change the DENO_VERSION as appropriate!**
+
+```bash
+DENO_VERSION=1.24.0
+
+docker build -t deno-build --build-arg DENO_VERSION="${DENO_VERSION}" --progress=plain --file ./Dockerfile.compile .
+DENO_BUILD_CONTAINER="$(docker create deno-build)"
+docker cp "${DENO_BUILD_CONTAINER}:/deno/target/release/deno" .
+docker rm "${CONTAINER_ID}"
+```
+
 ### How does it work?
 
 Originally this project compiled Deno on [GitHub Actions](https://github.com/features/actions) using QEMU to emulate ARM on x86, this would use 8GB+ of RAM and take hours (usually around 3 hours).
