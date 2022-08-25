@@ -91,3 +91,20 @@ I have forked `rusty_v8` for this project and have been able to successfully cro
 I'm using Deno for one of my projects &mdash; [MovieMatch](https://github.com/LukeChannings/moviematch) &mdash; that has a requirement to provide standalone binaries for popular architectures, as well as a multi-architecture Docker image.
 
 If you're interested in how I build standalone binaries for these architectures, check out the build file [here](https://github.com/LukeChannings/moviematch/blob/main/Justfile#L69).
+
+
+### How do you run the GitHub actions runner on macOS?
+
+```
+docker run --name github-runner --rm \
+  -e REPO_URL="https://github.com/LukeChannings/deno-arm64" \
+  -e RUNNER_NAME="deno-arm64-runner" \
+  -e RUNNER_TOKEN="${RUNNER_TOKEN}" \
+  -e RUNNER_WORKDIR="/tmp/deno-arm64" \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /tmp/deno-arm64:/tmp/deno-arm64 \
+  myoung34/github-runner:latest
+```
+
+If the `myoung34/github-runner` image is not latest, sometimes the container will restart infinitely.
+Killing it and pulling the latest fixes the problem.
