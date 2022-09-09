@@ -8,6 +8,17 @@
 I put this together because there are no Linux ARM64 binaries for Deno [yet](https://github.com/denoland/deno/issues/1846#issuecomment-725165778).
 This project compiles ARM binaries and simultaneously releases a combined arm64 & amd64 container image based on Ubuntu.
 
+### Install
+
+I have modified the default Deno installation script ([https://deno.land/install.sh](https://deno.land/install.sh)) to handle Linux ARM64 hosts.
+You can find it in this gist: [deno_install.sh](https://gist.github.com/LukeChannings/09d53f5c364391042186518c8598b85e#file-deno_install-sh).
+
+This snippet will install deno on any platform. **Please read the script source code before running any `curl | sh` scripts!**
+
+```bash
+curl -s https://gist.githubusercontent.com/LukeChannings/09d53f5c364391042186518c8598b85e/raw/ac8cd8c675b985edd4b3e16df63ffef14d1f0e24/deno_install.sh | sh
+```
+
 ### Compiling locally
 
 To build a binary locally, using Docker, the following should compile and export a binary into the local directory.
