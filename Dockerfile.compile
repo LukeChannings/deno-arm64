@@ -22,9 +22,13 @@ ADD deno_upgrade_release_url.patch /deno/
 
 RUN patch -p1 < deno_upgrade_release_url.patch
 
+ADD deno_i8.patch /deno/
+
+RUN patch -p1 < deno_i8.patch
+
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 RUN rustup target add wasm32-unknown-unknown
-RUN rustup target add wasm32-wasi 
+RUN rustup target add wasm32-wasi
 
 RUN cargo build -p deno --release --locked
