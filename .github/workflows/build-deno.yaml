@@ -24,9 +24,9 @@ jobs:
           VERSION="${VERSION#refs/tags/}"
           response=$(curl -s -H "Accept: application/json" https://api.github.com/repos/lukechannings/deno-arm64/releases)
           release=$(echo $response | jq ".[]|select(.tag_name==\"${VERSION}\")")
-          echo "::set-output name=version::${VERSION}"
-          echo "::set-output name=upload_url::$(echo $release | jq -r ".upload_url")"
-          echo "::set-output name=prerelease::$(echo $release | jq -r ".prerelease")"
+          echo "version=${VERSION}" >> $GITHUB_ENV
+          echo "upload_url=$(echo $release | jq -r ".upload_url")" >> $GITHUB_ENV
+          echo "prerelease=$(echo $release | jq -r ".prerelease")" >> $GITHUB_ENV
   compile:
     runs-on: self-hosted
     needs: release_metadata
