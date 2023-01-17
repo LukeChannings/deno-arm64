@@ -23,6 +23,10 @@ ADD deno_upgrade_release_url.patch /deno/
 
 RUN patch -p1 < deno_upgrade_release_url.patch
 
+ADD typefix.patch /deno/
+
+RUN patch -p1 < typefix.patch
+
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 RUN rustup target add wasm32-unknown-unknown
