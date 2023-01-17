@@ -14,9 +14,9 @@ jobs:
     name: Get Release Upload Metadata
     runs-on: self-hosted
     outputs:
+      version: ${{ steps.get_upload_metadata.outputs.version }}
       upload_url: ${{ steps.get_upload_metadata.outputs.upload_url }}
       prerelease: ${{ steps.get_upload_metadata.outputs.prerelease }}
-      version: ${{ steps.get_upload_metadata.outputs.version }}
     steps:
       - id: get_upload_metadata
         run: |
@@ -46,6 +46,10 @@ jobs:
           docker cp "${CONTAINER_ID}:/deno/target/release/deno" .
           docker rm "${CONTAINER_ID}"
           zip deno-linux-arm64.zip ./deno
+      - uses: actions/upload-artifact@v3
+        with:
+          name: deno-linux-arm64.zip
+          path: ./deno-linux-arm64.zip
       - name: Upload Release Asset
         id: upload-release-asset-deno
         uses: actions/upload-release-asset@v1
