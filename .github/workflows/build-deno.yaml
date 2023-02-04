@@ -31,7 +31,7 @@ jobs:
   compile:
     runs-on:
       - self-hosted
-      - buildjet-32vcpu-ubuntu-2204-arm
+      - buildjet-8vcpu-ubuntu-2204-arm
     needs: metadata
     name: "Compile"
     steps:
