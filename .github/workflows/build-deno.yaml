@@ -31,7 +31,7 @@ jobs:
   compile:
     runs-on:
       - self-hosted
-      - buildjet-8vcpu-ubuntu-2204-arm
+      - buildjet-16vcpu-ubuntu-2204-arm
     needs: metadata
     name: "Compile"
     steps:
@@ -49,10 +49,6 @@ jobs:
           docker cp "${CONTAINER_ID}:/deno/target/release/deno" .
           docker rm "${CONTAINER_ID}"
           zip deno-linux-arm64.zip ./deno
-      - uses: actions/upload-artifact@v3
-        with:
-          name: deno-linux-arm64.zip
-          path: ./deno-linux-arm64.zip
       - name: Upload Release Asset
         id: upload-release-asset-deno
         uses: actions/upload-release-asset@v1
