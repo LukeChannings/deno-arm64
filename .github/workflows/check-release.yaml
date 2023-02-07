@@ -1,0 +1,35 @@
+name: Check Deno Release
+
+on:
+  schedule:
+    - cron:  '30 * * * *'
+
+jobs:
+  sync_releases:
+    name: "Sync release versions between `denoland/deno` and `lukechannings/deno-arm64`"
+    steps:
+      - name: Compare latest releases
+        shell: bash
+        run: |
+          get_latest_github_release() {
+            local url="https://api.github.com/repos/${1}/releases"
+            local response=$(curl -s -H "Accept: application/json" $url)
+            echo $response | jq -r '.[0].tag_name'
+          }
+
+          DENOLAND_VERSION=$(get_latest_github_release "denoland/deno")
+          LUKECHANNINGS_VERSION=$(get_latest_github_release "lukechannings/deno-arm64")
+
+          echo "denoland/deno version: $DENOLAND_VERSION"
+          echo "lukechannings/deno-arm64 version: $LUKECHANNINGS_VERSION"
+
+          if [[ "$DENOLAND_VERSION" != "$LUKECHANNINGS_VERSION" ]]; then
+            echo "release_version=$DENOLAND_VERSION" >> $GITHUB_ENV
+          fi
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ env.release_version }}
+        with:
+          name: ${{ env.release_version }}
+          tag_name: ${{ env.release_version }}
+          body: "[${{ env.release_version }}](https://github.com/denoland/deno/releases/tag/${{ env.release_version }})"
