@@ -1,4 +1,4 @@
-name: Check Deno Release
+name: Sync Deno Releases
 
 on:
   schedule:
@@ -7,6 +7,7 @@ on:
 jobs:
   sync_releases:
     name: "Sync release versions between `denoland/deno` and `lukechannings/deno-arm64`"
+    runs-on: ubuntu-latest
     steps:
       - name: Compare latest releases
         shell: bash
