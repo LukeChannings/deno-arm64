@@ -2,7 +2,7 @@ name: Sync Deno Releases
 
 on:
   schedule:
-    - cron:  0 * * * *'
+    - cron:  '0 * * * *'
 
 jobs:
   sync_releases:
