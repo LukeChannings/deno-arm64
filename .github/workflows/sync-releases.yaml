@@ -2,7 +2,7 @@ name: Sync Deno Releases
 
 on:
   schedule:
-    - cron:  '30 * * * *'
+    - cron:  0 * * * *'
 
 jobs:
   sync_releases:
@@ -13,9 +13,8 @@ jobs:
         shell: bash
         run: |
           get_latest_github_release() {
-            local url="https://api.github.com/repos/${1}/releases"
-            local response=$(curl -s -H "Accept: application/json" $url)
-            echo $response | jq -r '.[0].tag_name'
+            local url="https://api.github.com/repos/${1}/releases/latest"
+            curl -s -H "Accept: application/json" "$url" | jq -r '.tag_name'
           }
 
           DENOLAND_VERSION=$(get_latest_github_release "denoland/deno")
