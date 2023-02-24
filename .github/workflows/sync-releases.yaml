@@ -27,9 +27,29 @@ jobs:
             echo "release_version=$DENOLAND_VERSION" >> $GITHUB_ENV
           fi
       - name: Release
-        uses: softprops/action-gh-release@v1
-        if: ${{ env.release_version }}
+        uses: actions/github-script@v6
+        if: ${{ env.release_version }}      
         with:
-          name: ${{ env.release_version }}
-          tag_name: ${{ env.release_version }}
-          body: "[${{ env.release_version }}](https://github.com/denoland/deno/releases/tag/${{ env.release_version }})"
+          script: |
+            // Create a new release in LukeChannings/deno-arm64 that matches the denoland/deno release.
+            await github.rest.repos.createRelease({
+              name: "${{ env.release_version }}",
+              tag_name: "${{ env.release_version }}",
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              make_latest: true,
+              body: "[${{ env.release_version }}](https://github.com/denoland/deno/releases/tag/${{ env.release_version }})"
+            });
+            
+            // Trigger a build job to create an ARM binary and Docker image for the new release
+            // Apparently using the API to create a release does not trigger jobs with on.release.[created] triggers.
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: "build-deno.yaml",
+              ref: "main",
+              inputs: {
+                version: "${{ env.release_version }}"
+              }
+            });
+            
