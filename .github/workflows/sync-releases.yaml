@@ -3,6 +3,7 @@ name: Sync Deno Releases
 on:
   schedule:
     - cron:  '0 * * * *'
+  workflow_dispatch
 
 jobs:
   sync_releases:
