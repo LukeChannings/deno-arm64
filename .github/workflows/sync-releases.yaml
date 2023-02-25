@@ -37,7 +37,6 @@ jobs:
               tag_name: "${{ env.release_version }}",
               owner: context.repo.owner,
               repo: context.repo.repo,
-              make_latest: true,
               body: "[${{ env.release_version }}](https://github.com/denoland/deno/releases/tag/${{ env.release_version }})"
             });
             
