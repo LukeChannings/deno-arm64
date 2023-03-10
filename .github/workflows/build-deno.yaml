@@ -40,10 +40,9 @@ jobs:
       - name: Compile Deno
         shell: bash
         run: |
-          apt-get update -y && apt-get install -y zip unzip
           echo "::echo::on"
-          echo "Compiling Deno version ${GITHUB_REF#refs/tags/}"
-          docker build -t deno-build --build-arg DENO_VERSION=${GITHUB_REF#refs/tags/} --file ./Dockerfile.compile .
+          echo "Compiling Deno version ${{ needs.metadata.outputs.version }}"
+          docker build -t deno-build --build-arg DENO_VERSION="${{ needs.metadata.outputs.version }}" --file ./Dockerfile.compile .
           echo "Extracting compiled deno binary to $(pwd)"
           CONTAINER_ID="$(docker create deno-build)"
           docker cp "${CONTAINER_ID}:/deno/target/release/deno" .
