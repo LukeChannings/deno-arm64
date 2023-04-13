@@ -20,8 +20,10 @@ RUN if [ "${DENO_VERSION:0:6}" == "canary" ]; then \
     fi
 
 ADD deno_upgrade_release_url.patch /deno/
-
 RUN patch -p1 < deno_upgrade_release_url.patch
+
+ADD fastwebsockets.patch /deno/
+RUN patch -p1 < fastwebsockets.patch
 
 ENV PATH="/root/.cargo/bin:${PATH}"
 
