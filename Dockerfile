@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 as downloader
+FROM ubuntu:22.04 as downloader
 
 ARG TARGETPLATFORM
 ARG VERSION
@@ -13,7 +13,7 @@ RUN [ "$TARGETPLATFORM" == "linux/amd64" ] && curl -Lsf https://github.com/denol
 
 RUN unzip deno.zip && rm deno.zip
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 COPY --from=downloader /deno /bin/deno
 RUN chmod 755 /bin/deno
