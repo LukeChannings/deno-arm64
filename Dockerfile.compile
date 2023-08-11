@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update -y
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y python curl build-essential unzip git
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y python curl build-essential unzip git libtool autoconf cmake
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 ARG DENO_VERSION
@@ -28,4 +28,4 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 RUN rustup target add wasm32-unknown-unknown
 RUN rustup target add wasm32-wasi
 
-RUN RUST_BACKTRACE=full cargo build --release --locked --all-targets
+RUN RUST_BACKTRACE=full cargo build --release --locked --bin deno
