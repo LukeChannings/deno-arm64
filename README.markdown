@@ -2,7 +2,6 @@
 
 [![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/lukechannings/deno/latest?label=Docker%20Image)](https://hub.docker.com/repository/docker/lukechannings/deno)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/lukechannings/deno-arm64?label=ARM64%20Binary)](https://github.com/LukeChannings/deno-arm64/releases)
-[![Compile Deno](https://github.com/LukeChannings/deno-arm64/actions/workflows/build-deno.yaml/badge.svg)](https://github.com/LukeChannings/deno-arm64/actions/workflows/build-deno.yaml)
 
 ## What is this
 
