@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update -y
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y python curl build-essential unzip git libtool autoconf cmake
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y python curl build-essential unzip git libtool autoconf cmake protobuf-compiler
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 ARG DENO_VERSION
