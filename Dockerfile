@@ -27,4 +27,4 @@ ENV DENO_DIR /deno-dir/
 ENV DENO_INSTALL_ROOT /usr/local
 
 ENTRYPOINT ["/bin/deno"]
-CMD ["run", "https://deno.land/std/examples/welcome.ts"]
+CMD ["run", "https://deno.land/std@0.198.0/examples/welcome.ts"]
