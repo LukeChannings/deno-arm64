@@ -3,8 +3,13 @@ FROM ubuntu:18.04
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update -y
-RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y python curl build-essential unzip git libtool autoconf cmake protobuf-compiler
+RUN DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" apt-get install -y python curl build-essential unzip git libtool autoconf cmake
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# Install latest protoc
+WORKDIR /
+RUN curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v25.0/protoc-25.0-linux-aarch_64.zip
+RUN unzip protoc-25.0-linux-aarch_64.zip
 
 ARG DENO_VERSION
 
