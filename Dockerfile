@@ -8,7 +8,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt update -y
 RUN apt install -y unzip curl
 
-RUN [ "$TARGETPLATFORM" == "linux/arm64" ] && curl -Lsf https://github.com/LukeChannings/deno-arm64/releases/download/${VERSION}/deno-$(echo $TARGETPLATFORM | tr '/' '-').zip -o deno.zip || true
+RUN [ "$TARGETPLATFORM" == "linux/arm64" ] && curl -Lsf https://github.com/denoland/deno/releases/download/${VERSION}/deno-aarch64-unknown-linux-gnu.zip -o deno.zip || true
 RUN [ "$TARGETPLATFORM" == "linux/amd64" ] && curl -Lsf https://github.com/denoland/deno/releases/download/${VERSION}/deno-x86_64-unknown-linux-gnu.zip -o deno.zip || true
 
 RUN unzip deno.zip && rm deno.zip
