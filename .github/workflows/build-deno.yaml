@@ -28,40 +28,10 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "upload_url=$(echo $release | jq -r ".upload_url")" >> $GITHUB_OUTPUT
           echo "prerelease=$(echo $release | jq -r ".prerelease")" >> $GITHUB_OUTPUT
-  compile:
-    runs-on:
-      - self-hosted
-      - buildjet-16vcpu-ubuntu-2204-arm
-    needs: metadata
-    name: "Compile"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Compile Deno
-        shell: bash
-        run: |
-          echo "::echo::on"
-          echo "Compiling Deno version ${{ needs.metadata.outputs.version }}"
-          docker build -t deno-build --build-arg DENO_VERSION="${{ needs.metadata.outputs.version }}" --file ./Dockerfile.compile .
-          echo "Extracting compiled deno binary to $(pwd)"
-          CONTAINER_ID="$(docker create deno-build)"
-          docker cp "${CONTAINER_ID}:/deno/target/release/deno" .
-          docker rm "${CONTAINER_ID}"
-          zip deno-linux-arm64.zip ./deno
-      - name: Upload Release Asset
-        id: upload-release-asset-deno
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.metadata.outputs.upload_url }}
-          asset_path: ./deno-linux-arm64.zip
-          asset_name: deno-linux-arm64.zip
-          asset_content_type: application/zip
   build-docker:
     name: Build Docker images
     runs-on: ubuntu-latest
-    needs: [ metadata, compile ]
+    needs: [ metadata ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
